@@ -44,14 +44,15 @@ def delete_complaint(id:int, db:Session = Depends(get_db)):
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
  
-@app.patch("/update_complaint/{id}")
+@app.patch("/update_complaint/{id}",response_model=schemas.Return)
 def update_complaint(new_data:schemas.Postupdate, id:int, db:Session = Depends(get_db) ):
     update_query = db.query(models.Complaint).filter(models.Complaint.id==id)
     toupdate=update_query.first()
     if not toupdate:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                     detail="complaint with this id was not found")
-    update_query.update(new_data.model_dump(exclude_unset=True),synchronize_session=False)
+    update_query.update(new_data.model_dump(exclude_unset=True))
     db.commit()
-    return Response(status_code=status.HTTP_202_ACCEPTED)
+    db.refresh(toupdate)
+    return toupdate
 
