@@ -9,9 +9,7 @@ router = APIRouter(
     tags = ['users']
 )
 
-
-
-
+'''get all users'''
 @router.get("/", response_model=List[schemas.ResponseReturn])
 def get_all_users(db:Session = Depends(get_db)):
     users = db.query(models.User).all()
@@ -19,14 +17,15 @@ def get_all_users(db:Session = Depends(get_db)):
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="no registered users")
     return users
 
+'''get user by id'''
 @router.get("/{id}", response_model=schemas.ResponseReturn)
 def get_by_id(id:int, db:Session=Depends(get_db)):
-    get_query=db.query(models.User).filter(models.User.id==id)
-    user=get_query.first()
+    user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user not found with this id")
     return user
 
+'''create new user'''
 @router.post("/", status_code=status.HTTP_201_CREATED,response_model=schemas.ResponseReturn)
 def create_user(data:schemas.NewUser, db:Session=Depends(get_db)):
 
@@ -39,34 +38,38 @@ def create_user(data:schemas.NewUser, db:Session=Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
+'''delete user by id'''
 @router.delete("/{id}", response_model=schemas.ResponseReturn )
 def delete_user(id:int, db:Session=Depends(get_db)):
-    delete_query=db.query(models.User).filter(models.User.id==id)
-    user = delete_query.first()
+    user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user with this id not present")
     db.delete(user)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+'''update some fields'''
 @router.patch("/{id}", response_model=schemas.ResponseReturn )
 def delete_user(data:schemas.UserUpdate,id:int, db:Session=Depends(get_db)):
-    update_query=db.query(models.User).filter(models.User.id==id)
-    user = update_query.first()
+    user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user with this id not present")
-    update_query.update(data.model_dump(exclude_unset=True))
+    updated_details = data.model_dump(exclude_unset=True)
+    for key, value in updated_details.items():
+        setattr(user, key, value)
     db.commit()
     db.refresh(user)
     return user
 
+'''replace all input fields'''
 @router.put("/{id}", response_model=schemas.ResponseReturn )
 def delete_user(data:schemas.UserReplace,id:int, db:Session=Depends(get_db)):
-    replace_query=db.query(models.User).filter(models.User.id==id)
-    user = replace_query.first()
+    user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user with this id not present")
-    replace_query.update(data.model_dump(exclude_unset=True))
+    updated_details = data.model_dump(exclude_unset=True)
+    for key, value in updated_details.items():
+        setattr(user, key, value)
     db.commit()
     db.refresh(user)
     return user

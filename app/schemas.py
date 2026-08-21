@@ -25,7 +25,7 @@ class Return(BaseModel):
 
 #complaints - PUT
 class PostReplace(BaseModel):
-    name:str
+    name:str 
     title:str
     content:str
     status : str
