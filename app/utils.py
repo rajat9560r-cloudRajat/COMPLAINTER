@@ -4,3 +4,4 @@ pwd_context = PasswordHash.recommended()
 
 def hashpass(password:str):
     return pwd_context.hash(password)
+
