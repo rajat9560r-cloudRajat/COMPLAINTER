@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Response, APIRouter
+from fastapi import Depends, HTTPException, status, Response, APIRouter
 from .. import models, schemas, utils
 from ..database import  get_db
 from sqlalchemy.orm import Session
@@ -39,7 +39,7 @@ def create_user(data:schemas.NewUser, db:Session=Depends(get_db)):
     return new_user
 
 '''delete user by id'''
-@router.delete("/{id}", response_model=schemas.ResponseReturn )
+@router.delete("/{id}")
 def delete_user(id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
@@ -50,7 +50,7 @@ def delete_user(id:int, db:Session=Depends(get_db)):
 
 '''update some fields'''
 @router.patch("/{id}", response_model=schemas.ResponseReturn )
-def delete_user(data:schemas.UserUpdate,id:int, db:Session=Depends(get_db)):
+def update_user(data:schemas.UserUpdate,id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user with this id not present")
@@ -67,7 +67,7 @@ def delete_user(data:schemas.UserUpdate,id:int, db:Session=Depends(get_db)):
 
 '''replace all input fields'''
 @router.put("/{id}", response_model=schemas.ResponseReturn )
-def delete_user(data:schemas.UserReplace,id:int, db:Session=Depends(get_db)):
+def replace_user(data:schemas.UserReplace,id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user with this id not present")

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Response, APIRouter
+from fastapi import Depends, HTTPException, status, Response, APIRouter
 from .. import models, schemas
 from ..database import get_db
 from sqlalchemy.orm import Session
@@ -37,7 +37,7 @@ def post_complaint(new_data:schemas.Validation, db:Session = Depends(get_db)):
     return complaint
 
 '''delete complaint by id'''
-@router.delete("/{id}" )
+@router.delete("/{id}")
 def delete_complaint(id:int, db:Session = Depends(get_db)):
     complaint = db.query(models.Complaint).filter(models.Complaint.id==id).first()
     if not complaint:
