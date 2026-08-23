@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException, status, Response, APIRouter
-from .. import models, schemas
+from .. import models, schemas, oauth2
 from ..database import get_db
 from sqlalchemy.orm import Session
 from typing import List
@@ -29,7 +29,7 @@ def get_onecomplaint(id:int, db:Session = Depends(get_db)):
 
 '''create complaint'''
 @router.post("/",status_code=status.HTTP_201_CREATED, response_model=schemas.Return)
-def post_complaint(new_data:schemas.Validation, db:Session = Depends(get_db)):
+def post_complaint(new_data:schemas.Validation, db:Session = Depends(get_db), get_access_token = Depends(oauth2.verify_access_token)):
     complaint = models.Complaint(**new_data.model_dump())
     db.add(complaint)
     db.commit()

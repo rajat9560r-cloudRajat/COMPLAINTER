@@ -17,6 +17,6 @@ def user_login(data:OAuth2PasswordRequestForm = Depends(), db:Session=Depends(ge
     if not utils.hashverify(data.password, user.password):
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="invalid credintials")
 
-    token = oauth2.create_access_token({"id":user.email})
+    token = oauth2.create_access_token({"id":user.id})
     
     return {"access token":token, "type":"bearer"}
