@@ -11,7 +11,7 @@ router = APIRouter(
 
 '''get all'''
 @router.get("/", response_model=List[schemas.Return])
-def get_allcomplaints(db:Session = Depends(get_db)):
+def get_allcomplaints(db:Session = Depends(get_db), get_current_user = Depends(oauth2.get_current_user)):
     complaints = db.query(models.Complaint).all()
     if not complaints:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -20,7 +20,7 @@ def get_allcomplaints(db:Session = Depends(get_db)):
 
 '''get by id'''
 @router.get("/{id}",response_model=schemas.Return)
-def get_onecomplaint(id:int, db:Session = Depends(get_db)):
+def get_onecomplaint(id:int, db:Session = Depends(get_db), get_current_user = Depends(oauth2.get_current_user)):
     complaint = db.query(models.Complaint).filter(models.Complaint.id==id).first()
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -29,7 +29,7 @@ def get_onecomplaint(id:int, db:Session = Depends(get_db)):
 
 '''create complaint'''
 @router.post("/",status_code=status.HTTP_201_CREATED, response_model=schemas.Return)
-def post_complaint(new_data:schemas.Validation, db:Session = Depends(get_db), get_access_token = Depends(oauth2.verify_access_token)):
+def post_complaint(new_data:schemas.Validation, db:Session = Depends(get_db), get_current_user = Depends(oauth2.get_current_user)):
     complaint = models.Complaint(**new_data.model_dump())
     db.add(complaint)
     db.commit()
@@ -38,7 +38,7 @@ def post_complaint(new_data:schemas.Validation, db:Session = Depends(get_db), ge
 
 '''delete complaint by id'''
 @router.delete("/{id}")
-def delete_complaint(id:int, db:Session = Depends(get_db)):
+def delete_complaint(id:int, db:Session = Depends(get_db), get_current_user = Depends(oauth2.get_current_user)):
     complaint = db.query(models.Complaint).filter(models.Complaint.id==id).first()
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -49,7 +49,7 @@ def delete_complaint(id:int, db:Session = Depends(get_db)):
 
 '''update some fields'''
 @router.patch("/{id}",response_model=schemas.Return)
-def update_complaint(new_data:schemas.Postupdate, id:int, db:Session = Depends(get_db) ):
+def update_complaint(new_data:schemas.Postupdate, id:int, db:Session = Depends(get_db), get_current_user = Depends(oauth2.get_current_user) ):
     complaint = db.query(models.Complaint).filter(models.Complaint.id == id).first()
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -63,7 +63,7 @@ def update_complaint(new_data:schemas.Postupdate, id:int, db:Session = Depends(g
 
 '''replace all input fields'''
 @router.put("/{id}",response_model=schemas.Return)
-def replace_complaint(data:schemas.PostReplace, id:int, db:Session = Depends(get_db) ):
+def replace_complaint(data:schemas.PostReplace, id:int, db:Session = Depends(get_db), get_current_user = Depends(oauth2.get_current_user) ):
     complaint = db.query(models.Complaint).filter(models.Complaint.id == id).first()
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
