@@ -14,7 +14,7 @@ router = APIRouter(
 def get_all_users(db:Session = Depends(get_db)):
     users = db.query(models.User).all()
     if not users:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="no registered users")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="No registered users")
     return users
 
 '''get user by id'''
@@ -22,7 +22,7 @@ def get_all_users(db:Session = Depends(get_db)):
 def get_by_id(id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user not found with this id")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User not found with this id")
     return user
 
 '''create new user'''
@@ -43,7 +43,7 @@ def create_user(data:schemas.NewUser, db:Session=Depends(get_db)):
 def delete_user(id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user with this id not present")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User with this id not present")
     db.delete(user)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -53,7 +53,7 @@ def delete_user(id:int, db:Session=Depends(get_db)):
 def update_user(data:schemas.UserUpdate,id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user with this id not present")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User with this id not present")
     updated_details = data.model_dump(exclude_unset=True)
 
     if "password" in updated_details:
@@ -70,7 +70,7 @@ def update_user(data:schemas.UserUpdate,id:int, db:Session=Depends(get_db)):
 def replace_user(data:schemas.UserReplace,id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
     if not user:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="user with this id not present")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User with this id not present")
     replacing_details = data.model_dump(exclude_unset=True)
 
     if "password" in replacing_details:

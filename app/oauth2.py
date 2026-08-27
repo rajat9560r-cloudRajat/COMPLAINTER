@@ -8,7 +8,9 @@ from fastapi.security.oauth2 import OAuth2PasswordBearer
 from fastapi import HTTPException, status, Depends
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
+
 load_dotenv()
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 expiration_token_time = 30

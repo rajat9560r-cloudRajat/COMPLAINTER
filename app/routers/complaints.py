@@ -15,7 +15,7 @@ def get_allcomplaints(db:Session = Depends(get_db), get_current_user = Depends(o
     complaints = db.query(models.Complaint).all()
     if not complaints:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="no complaints found")
+                            detail="No complaints found")
     return complaints
 
 '''get by id'''
@@ -24,7 +24,7 @@ def get_onecomplaint(id:int, db:Session = Depends(get_db), get_current_user = De
     complaint = db.query(models.Complaint).filter(models.Complaint.id==id).first()
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="complaint with this id was not found")
+                            detail="Complaint with this id was not found")
     return complaint
 
 '''create complaint'''
@@ -34,6 +34,8 @@ def post_complaint(new_data:schemas.Validation, db:Session = Depends(get_db), ge
     db.add(complaint)
     db.commit()
     db.refresh(complaint)
+    print(get_current_user)
+
     return complaint
 
 '''delete complaint by id'''
@@ -42,7 +44,7 @@ def delete_complaint(id:int, db:Session = Depends(get_db), get_current_user = De
     complaint = db.query(models.Complaint).filter(models.Complaint.id==id).first()
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="complaint with this id was not found")
+                            detail="Complaint with this id was not found")
     db.delete(complaint)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -53,7 +55,7 @@ def update_complaint(new_data:schemas.Postupdate, id:int, db:Session = Depends(g
     complaint = db.query(models.Complaint).filter(models.Complaint.id == id).first()
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                    detail="complaint with this id was not found")
+                                    detail="Complaint with this id was not found")
     updated_details = new_data.model_dump(exclude_unset=True)
     for key, value in updated_details.items():
         setattr(complaint, key, value)
@@ -67,7 +69,7 @@ def replace_complaint(data:schemas.PostReplace, id:int, db:Session = Depends(get
     complaint = db.query(models.Complaint).filter(models.Complaint.id == id).first()
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                    detail="complaint with this id was not found")
+                                    detail="Complaint with this id was not found")
     replacing_details = data.model_dump(exclude_unset=True)
     for key, value in replacing_details.items():
         setattr(complaint, key, value)
