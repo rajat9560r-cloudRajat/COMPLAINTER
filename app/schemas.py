@@ -61,9 +61,6 @@ class UserReplace(BaseModel):
     password:str
 
 ############################################################################################
-class Credentials(BaseModel):
-    email : EmailStr
-    password : str
 
 class TokenData(BaseModel):
     id : str
