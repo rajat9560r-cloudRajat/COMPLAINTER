@@ -19,6 +19,7 @@ class Return(BaseModel):
     id : int
     status : str
     title : str
+    owner_id : int
 
     class Config:
         orm_mode=True
