@@ -30,11 +30,11 @@ def get_onecomplaint(id:int, db:Session = Depends(get_db), get_current_user = De
 '''create complaint'''
 @router.post("/",status_code=status.HTTP_201_CREATED, response_model=schemas.Return)
 def post_complaint(new_data:schemas.Validation, db:Session = Depends(get_db), get_current_user = Depends(oauth2.get_current_user)):
-    complaint = models.Complaint(**new_data.model_dump())
+    
+    complaint = models.Complaint(owner_id=get_current_user,**new_data.model_dump())
     db.add(complaint)
     db.commit()
     db.refresh(complaint)
-    print(get_current_user)
 
     return complaint
 
