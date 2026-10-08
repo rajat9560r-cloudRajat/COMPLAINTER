@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, TIMESTAMP, func
+from sqlalchemy import Column, Integer, String, TIMESTAMP, func, ForeignKey
 from .database import Base
 
 class Complaint(Base):
@@ -10,7 +10,7 @@ class Complaint(Base):
     content = Column(String, nullable=False)
     status = Column(String, nullable=False, server_default="Pending")
     created_at = Column(TIMESTAMP, nullable=False, server_default=func.now())
-
+    owner_id = Column(Integer, ForeignKey("users2.id",ondelete="CASCADE"),nullable=False)
 
 class User(Base):
     __tablename__ = "users2"
