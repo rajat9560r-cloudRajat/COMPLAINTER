@@ -14,7 +14,7 @@ router = APIRouter(
 '''get all'''
 @router.get("/", response_model=List[schemas.Return])
 def get_allcomplaints(db:Session = Depends(get_db), get_current_user = Depends(oauth2.get_current_user)):
-    complaints = db.query(models.Complaint).all()
+    complaints = db.query(models.Complaint).filter(models.Complaint.owner_id==get_current_user).all()
     
     if not complaints:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No complaints found")
@@ -27,6 +27,9 @@ def get_onecomplaint(id:int, db:Session = Depends(get_db), get_current_user = De
     
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Complaint with this id was not found")
+    if complaint.owner_id != get_current_user:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="You cannot access other's complaints nig")
+    
     return complaint
 
 '''create complaint'''
@@ -46,6 +49,9 @@ def delete_complaint(id:int, db:Session = Depends(get_db), get_current_user = De
     
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Complaint with this id was not found")
+    if complaint.owner_id != get_current_user:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="You cannot access other's complaints nig")
+
     db.delete(complaint)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -57,6 +63,9 @@ def update_complaint(new_data:schemas.Postupdate, id:int, db:Session = Depends(g
     
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Complaint with this id was not found")
+    if complaint.owner_id != get_current_user:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="You cannot access other's complaints nig")
+
     updated_details = new_data.model_dump(exclude_unset=True)
     
     for key, value in updated_details.items():
@@ -72,6 +81,9 @@ def replace_complaint(data:schemas.PostReplace, id:int, db:Session = Depends(get
     
     if not complaint:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Complaint with this id was not found")
+    if complaint.owner_id != get_current_user:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="You cannot access other's complaints nig")
+
     replacing_details = data.model_dump(exclude_unset=True)
     
     for key, value in replacing_details.items():
