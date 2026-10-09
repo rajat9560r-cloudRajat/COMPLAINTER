@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, TIMESTAMP, func, ForeignKey
 from .database import Base
+from sqlalchemy.orm import relationship
+
 
 class Complaint(Base):
     __tablename__ = "complaints"
@@ -11,6 +13,8 @@ class Complaint(Base):
     status = Column(String, nullable=False, server_default="Pending")
     created_at = Column(TIMESTAMP, nullable=False, server_default=func.now())
     owner_id = Column(Integer, ForeignKey("users2.id",ondelete="CASCADE"),nullable=False)
+
+    owner = relationship("User")
 
 class User(Base):
     __tablename__ = "users2"
