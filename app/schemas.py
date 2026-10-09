@@ -1,38 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
-#class to validate user's input
-class Validation(BaseModel):
-    name:str
-    title:str
-    content:str
-
-#complaints - PATCH
-class Postupdate(BaseModel):
-    name:Optional[str] = None
-    title:Optional[str] = None
-    content:Optional[str] = None
-    status :Optional[str] = None
-
-#complaints - RETURN
-class Return(BaseModel):
-    id : int
-    status : str
-    title : str
-    owner_id : int
-
-    class Config:
-        orm_mode=True
-
-#complaints - PUT
-class PostReplace(BaseModel):
-    name:str 
-    title:str
-    content:str
-    status : str
-
-#############################################################################################
-
 '''
 3 schemas will be created--> for validation, for update, for returning'''
 
@@ -62,6 +30,39 @@ class UserReplace(BaseModel):
     password:str
 
 ############################################################################################
+
+#class to validate user's input
+class Validation(BaseModel):
+    name:str
+    title:str
+    content:str
+
+#complaints - PATCH
+class Postupdate(BaseModel):
+    name:Optional[str] = None
+    title:Optional[str] = None
+    content:Optional[str] = None
+    status :Optional[str] = None
+
+#complaints - RETURN
+class Return(BaseModel):
+    id : int
+    status : str
+    title : str
+    owner_id : int
+
+    owner : ResponseReturn
+    class Config:
+        orm_mode=True
+
+#complaints - PUT
+class PostReplace(BaseModel):
+    name:str 
+    title:str
+    content:str
+    status : str
+
+#############################################################################################
 
 
 
