@@ -10,9 +10,9 @@ class Validation(BaseModel):
 #complaints - PATCH
 class Postupdate(BaseModel):
     name:Optional[str] = None
-    title:Optional[str]= None
-    content:Optional[str]=None
-    status : str | None = None
+    title:Optional[str] = None
+    content:Optional[str] = None
+    status :Optional[str] = None
 
 #complaints - RETURN
 class Return(BaseModel):
@@ -51,10 +51,10 @@ class ResponseReturn(BaseModel):
     id : int
     name : str
     email : str
+    
     class Config():
         from_attributes=True 
         #old name was- orm_mode
-
 
 class UserReplace(BaseModel):
     name:str
@@ -63,8 +63,7 @@ class UserReplace(BaseModel):
 
 ############################################################################################
 
-class TokenData(BaseModel):
-    id : str
+
 
 class Token(BaseModel):
     access_token : str

@@ -4,14 +4,14 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
 url = os.getenv("DB_URL")
-
 engine = create_engine(url)
-
 sessionlocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+#dependency injection
 def get_db():
     db = sessionlocal()
     try:

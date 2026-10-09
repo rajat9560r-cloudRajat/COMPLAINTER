@@ -13,6 +13,7 @@ router = APIRouter(
 @router.get("/", response_model=List[schemas.ResponseReturn])
 def get_all_users(db:Session = Depends(get_db)):
     users = db.query(models.User).all()
+    
     if not users:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="No registered users")
     return users
@@ -21,6 +22,7 @@ def get_all_users(db:Session = Depends(get_db)):
 @router.get("/{id}", response_model=schemas.ResponseReturn)
 def get_by_id(id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
+    
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User not found with this id")
     return user
@@ -42,6 +44,7 @@ def create_user(data:schemas.NewUser, db:Session=Depends(get_db)):
 @router.delete("/{id}")
 def delete_user(id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
+    
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User with this id not present")
     db.delete(user)
@@ -52,6 +55,7 @@ def delete_user(id:int, db:Session=Depends(get_db)):
 @router.patch("/{id}", response_model=schemas.ResponseReturn )
 def update_user(data:schemas.UserUpdate,id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
+    
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User with this id not present")
     updated_details = data.model_dump(exclude_unset=True)
@@ -69,6 +73,7 @@ def update_user(data:schemas.UserUpdate,id:int, db:Session=Depends(get_db)):
 @router.put("/{id}", response_model=schemas.ResponseReturn )
 def replace_user(data:schemas.UserReplace,id:int, db:Session=Depends(get_db)):
     user=db.query(models.User).filter(models.User.id==id).first()
+    
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User with this id not present")
     replacing_details = data.model_dump(exclude_unset=True)

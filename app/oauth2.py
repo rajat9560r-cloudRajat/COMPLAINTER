@@ -7,7 +7,7 @@ from . import schemas
 from fastapi.security.oauth2 import OAuth2PasswordBearer
 from fastapi import HTTPException, status, Depends
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login')
 
 load_dotenv()
 
@@ -27,12 +27,13 @@ def verify_access_token(token:str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         id = payload.get("id")
+        
         if not id:
             raise credentials_exception
-        token_data = schemas.TokenData(id = str(id))
+    
     except InvalidTokenError:
         raise credentials_exception
-    return token_data
+    return id
 
 
 def get_current_user(token:str = Depends(oauth2_scheme )):
