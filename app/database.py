@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 import os
 from dotenv import load_dotenv
 
@@ -9,7 +9,8 @@ url = os.getenv("DB_URL")
 engine = create_engine(url)
 sessionlocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 #dependency injection
 def get_db():
