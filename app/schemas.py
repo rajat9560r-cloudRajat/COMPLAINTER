@@ -53,7 +53,7 @@ class Return(BaseModel):
 
     owner : ResponseReturn
     class Config:
-        orm_mode=True
+        from_attributes=True
 
 #complaints - PUT
 class PostReplace(BaseModel):
